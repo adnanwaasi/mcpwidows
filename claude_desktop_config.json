@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "mix_server": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/ABSOLUTE/PATH/TO/mix_server",
+        "run",
+        "main.py"
+      ]
+    }
+  }
+}
