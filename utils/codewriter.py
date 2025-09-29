@@ -1,5 +1,5 @@
 import code_gen_with_groq
-
+import arch_gen 
 def generate_code(strings):
     return code_gen_with_groq.generate_code_with_groq(strings)
 
@@ -18,3 +18,16 @@ def generate_and_write_code(requested_feature, language, filename):
     code = generate_code(prompt)
     write_code_to_file(code, filename)
     return code
+### invoke the function for multple times over the file in the architecture list
+def generate_code_for_architecture(requested_feature, language):
+    architecture = arch_gen.architecure_in_list(requested_feature)
+    for file in architecture:
+        
+        code = generate_and_write_code(requested_feature, language, file)
+        print(f"Generated code for {file}:\n{code}\n")
+        
+if __name__ == "__main__":
+    # Example usage
+    requested_feature = "a system for managing a library with books, authors, and borrowers"
+    language = "python"
+    generate_code_for_architecture(requested_feature, language)
