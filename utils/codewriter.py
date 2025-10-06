@@ -2,12 +2,12 @@ import code_gen_with_groq
 import arch_gen as arch_gen
 from dotenv import load_dotenv
 import os
-
+import langgen as langgen
 # Load environment variables from .env file
 load_dotenv()
 
 def generate_code(strings):
-    return code_gen_with_groq.generate_code_with_groq(strings)
+    return langgen.initialize(strings)
 
 ### to write the code to a file and create directories if needed
 def write_code_to_file(code, filename):
