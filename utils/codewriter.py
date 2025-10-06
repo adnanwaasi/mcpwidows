@@ -19,7 +19,7 @@ def write_code_to_file(code, filename):
     print(f"Code written to {filename}")
 
 def get_prompt_for_code_generation(requested_feature, language, filename):
-    return f"Generate a {language} code for the following feature: {requested_feature}. Save the code in a file named {filename}."
+    return f"Generate a {language} code for the following feature: {requested_feature} you are working in various files and currently you are in  {filename}."
     ### pass it to the code generation model
 
 def generate_and_write_code(requested_feature, language, filename):
