@@ -27,30 +27,21 @@ def main():
 def helper():
     return "This is a helper function."
 #endfile'''
+def write_code_to_file(content):
+    # find blocks of #file:name ... #endfile
+    blocks = re.findall(r"#file:(.*?)\n(.*?)#endfile", content, re.S)
 
-# find blocks of #file:name ... #endfile
-blocks = re.findall(r"#file:(.*?)\n(.*?)#endfile", content, re.S)
-
-for filename, code in blocks:
-    filename = filename.strip()
-    with open(filename, "w") as f:
-        f.write(code.strip() + "\n")
-        print(f"Writing to {filename}:\n{code.strip()}\n")
-    print(f"Created {filename}")
+    for filename, code in blocks:
+        filename = filename.strip()
+        with open(filename, "w") as f:
+            f.write(code.strip() + "\n")
+            print(f"Writing to {filename}:\n{code.strip()}\n")
+        print(f"Created {filename}")
 
 
-### chatgpt bro Then run:
+### chatgpt bro i had to change it's working fine now 
 if __name__ == "__main__":
-    # Example usage
-    code = """#file:main.py
-def main():
-    print("Hello, World!")
-#endfile
-
-#file:utils.py
-def helper():
-    return "This is a helper function."
-#endfile
-"""
-    # result = separate_code_and_architecture(code)
-    # print(result)
+    prompt = "a fibonacci series in python"
+    content = cg.generate_code_with_groq(prompt)
+    print("Generated Content:\n", content)
+    write_code_to_file(content)
