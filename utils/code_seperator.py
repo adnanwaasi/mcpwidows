@@ -18,17 +18,26 @@ def seperate_code_and_architecture(code):
 import re
 
 
-content = '''#file:main.py
-def main():
-    print("Hello, World!")
-#endfile
+# content = '''#file:main.py
+# def main():
+#     print("Hello, World!")
+# #endfile
 
-#file:utils.py
-def helper():
-    return "This is a helper function."
-#endfile'''
-def write_code_to_file(content):
-    # find blocks of #file:name ... #endfile
+# #file:utils.py
+# def helper():
+#     return "This is a helper function."
+# #endfile'''
+
+# find blocks of #file:name ... #endfile
+def write_code_to_files(content):
+    blocks = re.findall(r"#file:(.*?)\n(.*?)#endfile", content, re.S)
+
+    for filename, code in blocks:
+        filename = filename.strip()
+        with open(filename, "w") as f:
+            f.write(code.strip() + "\n")
+            print(f"Writing to {filename}:\n{code.strip()}\n")
+        print(f"Created {filename}")
     blocks = re.findall(r"#file:(.*?)\n(.*?)#endfile", content, re.S)
 
     for filename, code in blocks:
@@ -39,9 +48,20 @@ def write_code_to_file(content):
         print(f"Created {filename}")
 
 
-### chatgpt bro i had to change it's working fine now 
+### chatgpt bro Then run:
 if __name__ == "__main__":
-    prompt = "a fibonacci series in python"
-    content = cg.generate_code_with_groq(prompt)
-    print("Generated Content:\n", content)
-    write_code_to_file(content)
+    # Example usage
+    content = cg.generate_code_with_groq("a simple web application for a blog platform using html , css and js ")
+    write_code_to_files(content)
+    code = """#file:main.py
+def main():
+    print("Hello, World!")
+#endfile
+
+#file:utils.py
+def helper():
+    return "This is a helper function."
+#endfile
+"""
+    # result = separate_code_and_architecture(code)
+    # print(result)
