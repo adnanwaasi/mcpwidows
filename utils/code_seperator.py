@@ -1,67 +1,38 @@
-import code_gen_with_groq as cg
-import arch_gen 
-from dotenv import load_dotenv
-import os
-
-
-def seperate_code_and_architecture(code):
-    # Define delimiters
-    start="#file:"
-    end="#endfile"
-    file_and_code = {}
-    ## you can split the code by the start delimiter and then for each part you can split it by the end delimiter and then you can get the filename and the code
-    for part in code.split(start)[1:]:
-        filename, code = part.split(end, 1)
-        file_and_code[filename.strip()] = code.strip()
-    return file_and_code
-## chatgpt generated code to write the code to files i have to corrrrect this code too 
 import re
+import os
+import code_gen_with_groq as cg
+from dotenv import load_dotenv
 
-
-# content = '''#file:main.py
-# def main():
-#     print("Hello, World!")
-# #endfile
-
-# #file:utils.py
-# def helper():
-#     return "This is a helper function."
-# #endfile'''
-
-# find blocks of #file:name ... #endfile
 def write_code_to_files(content):
+    # Extract all #file blocks
     blocks = re.findall(r"#file:(.*?)\n(.*?)#endfile", content, re.S)
 
-    for filename, code in blocks:
-        filename = filename.strip()
-        with open(filename, "w") as f:
-            f.write(code.strip() + "\n")
-            print(f"Writing to {filename}:\n{code.strip()}\n")
-        print(f"Created {filename}")
-    blocks = re.findall(r"#file:(.*?)\n(.*?)#endfile", content, re.S)
+    # Save code before the first #file: block as app.py
+    prefile_code = content.split("#file:")[0].strip()
+    if prefile_code:
+        with open("app.py", "w", encoding="utf-8") as f:
+            f.write(prefile_code + "\n")
+        print("✅ Created file: app.py")
 
-    for filename, code in blocks:
-        filename = filename.strip()
-        with open(filename, "w") as f:
-            f.write(code.strip() + "\n")
-            print(f"Writing to {filename}:\n{code.strip()}\n")
-        print(f"Created {filename}")
+    # Write each #file block
+    for filepath, code_text in blocks:
+        filepath = filepath.strip()
+        code_text = code_text.strip()
 
+        # Create directories if needed
+        folder = os.path.dirname(filepath)
+        if folder:
+            os.makedirs(folder, exist_ok=True)
+            print(f"📁 Created folder(s): {folder}")
 
-### chatgpt bro Then run:
+        # Write file
+        with open(filepath, "w", encoding="utf-8") as f:
+            f.write(code_text + "\n")
+        print(f"✅ Created file: {filepath}")
+
 if __name__ == "__main__":
-    # Example usage
-    content = cg.generate_code_with_groq("a simple web application for a blog platform using html , css and js ")
-    write_code_to_files(content)
-    code = """#file:main.py
-def main():
-    print("Hello, World!")
-#endfile
+    load_dotenv()
 
-#file:utils.py
-def helper():
-    return "This is a helper function."
-#endfile
-"""
-    # result = separate_code_and_architecture(code)
-    # print(result)
+    # Example usage — generate code using Groq
+    content = cg.generate_code_with_groq("a simple expense tracker  using nodejs, react and expressjs")
+    write_code_to_files(content)
