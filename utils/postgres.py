@@ -14,7 +14,7 @@ def connect_to_postgres():
 
 def push_data_to_postgres(session_id, prompt, output):
     conn, cursor = connect_to_postgres()
-    sql_query = "INSERT INTO llm ( id, prompt, response) VALUES (%s, %s, %s)"
+    sql_query = "INSERT INTO llm ( id, prompt, output) VALUES (%s, %s, %s)"
     cursor.execute(sql_query, (session_id,  prompt, output))
     conn.commit()
     cursor.close()

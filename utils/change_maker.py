@@ -36,7 +36,7 @@ if __name__ == "__main__":
     cursor.execute(sql_query)
     records=cursor.fetchall()
     code_snippet=records[-1]
-    prompt=" in the home page make it animated and responsive and a hyperlink to my github profile with the url as 'https://github.com/adnanwaasi'"
+    prompt="can you add the name dhanush instead of adnan in about me  "
     updated_code=update_context(prompt,code_snippet)
     print(f"Original Code Snippet:\n{code_snippet}\nUpdated Code Snippet:\n{updated_code}\n")
     cursor.close()

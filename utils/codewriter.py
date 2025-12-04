@@ -1,13 +1,16 @@
 import code_gen_with_groq
-import arch_gen as arch_gen
 from dotenv import load_dotenv
 import os
 import langgen as langgen
+import postgres
+
 # Load environment variables from .env file
 load_dotenv()
 
-def generate_code(strings):
-    return langgen.initialize(strings)
+def generate_code(strings, filename):
+    # Pass filename context for unique code per file
+    prompt = f"Generate a python code for the following feature: {strings}. You are working in various files and currently you are in {filename}. Generate only the code required inside this file, and ensure it is unique and relevant to the filename."
+    return langgen.initialize(prompt)
 
 ### to write the code to a file and create directories if needed
 def write_code_to_file(code, filename):
@@ -18,24 +21,18 @@ def write_code_to_file(code, filename):
         file.write(code)
     print(f"Code written to {filename}")
 
-def get_prompt_for_code_generation(requested_feature, language, filename):
-    return f"Generate a {language} code for the following feature: {requested_feature} you are working in various files and currently you are in  {filename}."
-    ### pass it to the code generation model
-
 def generate_and_write_code(requested_feature, language, filename):
-    prompt = get_prompt_for_code_generation(requested_feature, language, filename)
-    code = generate_code(prompt)
+    code = generate_code(requested_feature, filename)
     write_code_to_file(code, filename)
     return code
-### invoke the function for multple times over the file in the architecture list
-def generate_code_for_architecture(requested_feature, language):
-    architecture = arch_gen.architecure_in_list(requested_feature)
-    for file in architecture: 
-        code = generate_and_write_code(requested_feature, language, file)
-        print(f"Generated code for {file}:\n{code}\n")
-        
+### invoke the function for multiple times over the file in the architecture list
+
+
+def push_to_postgres(prompt,user_id=1,output=""):
+    conn,cursor=postgres.connect_to_postgres()
+    sql_query = "INSERT INTO llm values (prompt,user_id,output)"
+
 if __name__ == "__main__":
     # Example usage
-    requested_feature = "a simple web application for a blog platform"
-    language = ["HTML", "CSS", "JavaScript"]
-    generate_code_for_architecture(requested_feature, language)
+    requested_feature = "a fibonacci series in python"
+    language = "python"
