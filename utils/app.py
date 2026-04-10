@@ -13,7 +13,7 @@ class CodeGeneratorApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Code Generator")
-        self.root.geometry("900x700")
+        self.root.geometry("900x900")
         self.root.configure(bg="#1e1e1e")
 
         # Configure dark theme colors
@@ -23,6 +23,8 @@ class CodeGeneratorApp:
         self.accent_color = "#007acc"
         self.error_color = "#f44747"
         self.success_color = "#4ec9b0"
+
+        self.project_name = "."
 
         self.setup_ui()
 
@@ -181,7 +183,7 @@ class CodeGeneratorApp:
 
         try:
             generated_code = cg.generate_code_with_groq(prompt)
-            cs.write_code_to_files(generated_code)
+            self.project_name = cs.write_code_to_files(generated_code)
             postgres.push_data_to_postgres(1, prompt, generated_code)
 
             self.output_text.delete("1.0", "end")
@@ -209,7 +211,7 @@ class CodeGeneratorApp:
 
         try:
             updated_code = cm.update_context(update_prompt, prev_code)
-            cs.write_code_to_files(updated_code)
+            cs.write_code_to_files(updated_code, project_dir=self.project_name)
             postgres.push_data_to_postgres(1, update_prompt, updated_code)
 
             self.output_text.delete("1.0", "end")
