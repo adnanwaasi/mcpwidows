@@ -11,3 +11,6 @@ wheels/
 
 # .env files
 .env
+
+# local fallback database
+local_fallback.db
